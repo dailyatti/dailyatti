@@ -1,4 +1,28 @@
-body {
-  font-family: sans-serif;
-  margin: 2rem;
+#arb-table {
+  border-collapse: separate;
+  border-spacing: 0 6px;
 }
+.arb-row {
+  background: #ffffff;
+  transition: background .2s, box-shadow .2s;
+  border-radius: 8px;
+}
+.arb-row:hover {
+  background: #f3f4f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.25);
+}
+.arb-row.active {
+  outline: 3px solid #3b82f6;
+}
+.profit {
+  font-weight: 600;
+}
+.profit.positive { color: #16a34a; }
+.profit.negative { color: #dc2626; }
+.flash {
+  animation: flash 1.5s forwards;
+}
+@keyframes flash {
+  0%   { background:#fef08a; }
+  100% { background:transparent; }
+} 
