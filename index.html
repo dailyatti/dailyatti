@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tailwind Form Demo</title>
+  <link href="dist/tailwind.css" rel="stylesheet">
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('contact-form');
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const feedback = document.getElementById('feedback');
+
+      function validate() {
+        let valid = true;
+        feedback.innerHTML = '';
+        if (!nameInput.value.trim()) {
+          valid = false;
+          const msg = document.createElement('div');
+          msg.textContent = 'Name is required.';
+          msg.className = 'text-red-600';
+          feedback.appendChild(msg);
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+          valid = false;
+          const msg = document.createElement('div');
+          msg.textContent = 'Email is invalid.';
+          msg.className = 'text-red-600';
+          feedback.appendChild(msg);
+        }
+        return valid;
+      }
+
+      nameInput.addEventListener('input', validate);
+      emailInput.addEventListener('input', validate);
+
+      form.addEventListener('submit', (e) => {
+        if (!validate()) {
+          e.preventDefault();
+        }
+      });
+
+      const taskForm = document.getElementById('task-form');
+      const taskInput = document.getElementById('task-input');
+      const taskList = document.getElementById('task-list');
+      let tasks = [];
+
+      function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach(task => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center justify-between bg-gray-50 p-2 rounded';
+          const span = document.createElement('span');
+          span.textContent = task.text;
+          span.className = 'flex-1 mr-2';
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Edit';
+          editBtn.setAttribute('aria-label', 'Edit task');
+          editBtn.className = 'text-blue-600 hover:underline mr-2';
+          editBtn.addEventListener('click', () => {
+            const newText = prompt('Update task', task.text);
+            if (newText !== null && newText.trim()) {
+              task.text = newText.trim();
+              renderTasks();
+            }
+          });
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'Delete';
+          delBtn.setAttribute('aria-label', 'Delete task');
+          delBtn.className = 'text-red-600 hover:underline';
+          delBtn.addEventListener('click', () => {
+            tasks = tasks.filter(t => t.id !== task.id);
+            renderTasks();
+          });
+          li.appendChild(span);
+          li.appendChild(editBtn);
+          li.appendChild(delBtn);
+          taskList.appendChild(li);
+        });
+      }
+
+      taskForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const text = taskInput.value.trim();
+        if (text) {
+          tasks.push({ id: Date.now(), text });
+          taskInput.value = '';
+          renderTasks();
+        }
+      });
+    });
+  </script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold text-primary mb-4">Contact Us</h1>
+    <form id="contact-form" class="grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Contact form">
+      <div class="flex flex-col">
+        <label for="name" class="mb-1">Name</label>
+        <input id="name" name="name" aria-label="Name" type="text" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary" required />
+      </div>
+      <div class="flex flex-col">
+        <label for="email" class="mb-1">Email</label>
+        <input id="email" name="email" aria-label="Email" type="email" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary" required />
+      </div>
+      <div id="feedback" class="md:col-span-2"></div>
+      <div class="md:col-span-2">
+        <button type="submit" tabindex="0" class="bg-secondary text-white px-4 py-2 rounded hover:bg-secondary/80">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow mt-8">
+    <h2 class="text-2xl font-bold text-primary mb-4">Task Manager</h2>
+    <form id="task-form" class="flex gap-2" aria-label="Add task form">
+      <input id="task-input" aria-label="Task description" type="text" class="flex-1 border p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Add a task" />
+      <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80">Add</button>
+    </form>
+    <ul id="task-list" class="mt-4 space-y-2"></ul>
+  </div>
+</body>
+</html>
